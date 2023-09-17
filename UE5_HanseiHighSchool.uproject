@@ -29,6 +29,10 @@
 		{
 			"Name": "HQSky",
 			"Enabled": false
+		},
+		{
+			"Name": "MultiUserClient",
+			"Enabled": true
 		}
 	]
 }
