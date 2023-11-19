@@ -8,7 +8,7 @@ public class UE5_HanseiHighSchool : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay","EnhancedInput"});
-		
+		PublicDependencyModuleNames.AddRange(new string[] {"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay","EnhancedInput","UnrealEd"});
+		PrivateDependencyModuleNames.AddRange(new string[]{"UnrealEd"});
 	}
 }

@@ -21,7 +21,7 @@ TArray<FString> UCaptureFunctionLibrary::GetPNGsOfPath(FString RootFolderFullPat
 	return Files;
 }
  
-/*bool UCaptureFunctionLibrary::SaveAssetOfPath(FString SaveRelativePath, FString FileName,FString ImportAssetPath)
+bool UCaptureFunctionLibrary::SaveAssetOfPath(FString SaveRelativePath, FString FileName,FString ImportAssetPath)
 {
 	SaveRelativePath += FileName;
 
@@ -41,7 +41,7 @@ TArray<FString> UCaptureFunctionLibrary::GetPNGsOfPath(FString RootFolderFullPat
 	return true;
 }
 
-UObject* UCaptureFunctionLibrary::LoadAssetOfPath(FString LoadRelativePath)
+UObject* UCaptureFunctionLibrary::LoadAssetOfPath(const FString LoadRelativePath)
 {
 	const FString AssetPath = LoadRelativePath;
 	const FSoftObjectPath AssetObjectPath(AssetPath);
@@ -49,7 +49,7 @@ UObject* UCaptureFunctionLibrary::LoadAssetOfPath(FString LoadRelativePath)
 	return Asset;
 }
 
-bool UCaptureFunctionLibrary::DeleteAssetOfPath(FString DeleteRelativePath)
+bool UCaptureFunctionLibrary::DeleteAssetOfPath(const FString DeleteRelativePath)
 {
 	const FString AssetPath = DeleteRelativePath;
 	const FSoftObjectPath AssetObjectPath(AssetPath);
@@ -60,4 +60,4 @@ bool UCaptureFunctionLibrary::DeleteAssetOfPath(FString DeleteRelativePath)
 	}
 	FAssetRegistryModule::AssetDeleted(Asset);
 	return true;
-}*/
+}
