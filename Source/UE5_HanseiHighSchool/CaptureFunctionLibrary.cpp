@@ -2,7 +2,6 @@
 
 
 #include "CaptureFunctionLibrary.h"
-
 #include "EditorReimportHandler.h"
 #include "HAL/FileManagerGeneric.h"
 #include "AssetRegistry/AssetRegistryModule.h"
@@ -22,23 +21,43 @@ TArray<FString> UCaptureFunctionLibrary::GetPNGsOfPath(FString RootFolderFullPat
 	return Files;
 }
  
-void UCaptureFunctionLibrary::SaveAssetOfPNG()
+/*bool UCaptureFunctionLibrary::SaveAssetOfPath(FString SaveRelativePath, FString FileName,FString ImportAssetPath)
 {
-	FString AssetName = TEXT("MyPrimaryDataAsset");
-	FString PackageName = TEXT("/Game/");
-	
-	PackageName += AssetName;
-	FString file = "C:\\Unreal\\UE5_HanseiHighSchool\\Saved\\Screenshots\\WindowsEditor\\HighresScreenshot00003.png";
+	SaveRelativePath += FileName;
 
-	UPackage* Package = CreatePackage(*PackageName);
+	UPackage* Package = CreatePackage(*SaveRelativePath);
 	Package->FullyLoad();
 	UTexture2D* NewAsset = NewObject<UTexture2D>(
-			Package, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
-	NewAsset->AssetImportData->Update(file);
-	auto* ReimportManager = FReimportManager::Instance();
-	ReimportManager->Reimport(NewAsset);
+			Package, *FileName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+	NewAsset->AssetImportData->Update(ImportAssetPath);
 
+	if(FReimportManager::Instance()->CanReimport(NewAsset) == false)
+	{
+		return false;
+	}
+	FReimportManager::Instance()->Reimport(NewAsset);
 	
-
 	FAssetRegistryModule::AssetCreated(NewAsset);
+	return true;
 }
+
+UObject* UCaptureFunctionLibrary::LoadAssetOfPath(FString LoadRelativePath)
+{
+	const FString AssetPath = LoadRelativePath;
+	const FSoftObjectPath AssetObjectPath(AssetPath);
+	UObject* Asset = StaticLoadObject(UObject::StaticClass(), nullptr, *AssetObjectPath.ToString());
+	return Asset;
+}
+
+bool UCaptureFunctionLibrary::DeleteAssetOfPath(FString DeleteRelativePath)
+{
+	const FString AssetPath = DeleteRelativePath;
+	const FSoftObjectPath AssetObjectPath(AssetPath);
+	UObject* Asset = StaticLoadObject(UObject::StaticClass(), nullptr, *AssetObjectPath.ToString());
+	if (Asset == nullptr)
+	{
+		return false;
+	}
+	FAssetRegistryModule::AssetDeleted(Asset);
+	return true;
+}*/
