@@ -6,7 +6,8 @@
 #include "HAL/FileManagerGeneric.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "EditorFramework/AssetImportData.h"
-
+#include "Engine/StreamableManager.h"
+#include "Engine/AssetManager.h"
 
 TArray<FString> UCaptureFunctionLibrary::GetPNGsOfPath(FString RootFolderFullPath, FString FileName) {
 
@@ -21,7 +22,7 @@ TArray<FString> UCaptureFunctionLibrary::GetPNGsOfPath(FString RootFolderFullPat
 	return Files;
 }
  
-bool UCaptureFunctionLibrary::SaveAssetOfPath(FString SaveRelativePath, FString FileName,FString ImportAssetPath)
+UObject* UCaptureFunctionLibrary::SaveAssetOfPath(FString SaveRelativePath, FString FileName,FString ImportAssetPath)
 {
 	SaveRelativePath += FileName;
 
@@ -31,14 +32,25 @@ bool UCaptureFunctionLibrary::SaveAssetOfPath(FString SaveRelativePath, FString 
 			Package, *FileName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
 	NewAsset->AssetImportData->Update(ImportAssetPath);
 
-	if(FReimportManager::Instance()->CanReimport(NewAsset) == false)
-	{
-		return false;
-	}
-	FReimportManager::Instance()->Reimport(NewAsset);
-	
 	FAssetRegistryModule::AssetCreated(NewAsset);
-	return true;
+	FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+	AssetRegistryModule.AssetCreated(NewAsset);
+
+	// 새 에셋이 레지스트리에 등록되었는지 확인
+	FName PackageName = FName(*NewAsset->GetOutermost()->GetName());
+	TArray<FAssetData> AssetDataArray;
+	AssetRegistryModule.Get().GetAssetsByPackageName(PackageName, AssetDataArray);
+
+	if (AssetDataArray.Num() > 0)
+	{
+		FReimportManager::Instance()->Reimport(NewAsset);
+	}
+	else
+	{
+		// 에셋이 레지스트리에 등록되지 않았습니다.
+	}
+	
+	return NewAsset;
 }
 
 UObject* UCaptureFunctionLibrary::LoadAssetOfPath(const FString LoadRelativePath)
@@ -60,4 +72,13 @@ bool UCaptureFunctionLibrary::DeleteAssetOfPath(const FString DeleteRelativePath
 	}
 	FAssetRegistryModule::AssetDeleted(Asset);
 	return true;
+}
+
+/**
+ * @brief 
+ * @param ReimportObject editorOnly
+ */
+void UCaptureFunctionLibrary::ReimportAsset(UObject* ReimportObject)
+{
+	FReimportManager::Instance()->Reimport(ReimportObject);
 }
